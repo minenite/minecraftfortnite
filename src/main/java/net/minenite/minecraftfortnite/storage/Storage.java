@@ -110,7 +110,7 @@ public class Storage {
         keysToThisDirection.clear();
         //
         Set<Integer> numbersSet = numbersString.stream().map(Integer::parseInt).collect(Collectors.toSet());
-        numbersSet.clear(); // again get rid of some memory
+        numbersString.clear(); // again get rid of some memory
         numbersSet.forEach(number -> list.add(deserialize(dataDirection, number)));
         return list;
     }
