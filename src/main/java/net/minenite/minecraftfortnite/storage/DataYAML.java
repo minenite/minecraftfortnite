@@ -27,9 +27,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 class DataYAML {
 
+    private final File dataFolder;
     private File file;
     private FileConfiguration configuration;
-    private final File dataFolder;
 
     DataYAML(File dataFolder) {
         this.dataFolder = dataFolder;
@@ -39,9 +39,14 @@ class DataYAML {
     private void createFile() {
         file = new File(dataFolder + File.separator, "data.yml");
         if (!file.exists()) {
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
             try {
                 file.createNewFile();
-            } catch (IOException e) {}
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         configuration = YamlConfiguration.loadConfiguration(file);
     }
@@ -49,7 +54,9 @@ class DataYAML {
     void save() {
         try {
             configuration.save(file);
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     FileConfiguration getConfiguration() {

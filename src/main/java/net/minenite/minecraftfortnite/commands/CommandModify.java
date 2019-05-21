@@ -17,36 +17,31 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  **/
-package net.minenite.minecraftfortnite.listeners;
+package net.minenite.minecraftfortnite.commands;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Subcommand;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.minenite.minecraftfortnite.MinecraftFortnite;
 import net.minenite.minecraftfortnite.storage.EnumDataDirection;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 
-public class PlayerJoinListener implements Listener {
+@CommandAlias("mfmodify|mfm")
+@CommandPermission("minecraftfortnite.modify")
+public class CommandModify extends BaseCommand {
 
     private final MinecraftFortnite plugin;
 
-    public PlayerJoinListener(MinecraftFortnite main) {
+    public CommandModify(MinecraftFortnite main) {
         plugin = main;
     }
 
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        event.setJoinMessage(ChatColor.BLUE + player.getName() + ChatColor.YELLOW + " has joined");
-        Location teleportTo = plugin.getStorage().deserialize(EnumDataDirection.TO_SPAWN_LOCATION, 0);
-        if (teleportTo == null) {
-            player.sendMessage(new ComponentBuilder("No teleport location set!").color(ChatColor.RED).create());
-            return;
-        }
-        player.teleport(teleportTo);
+    @Subcommand("spawnLoc")
+    public void modifySpawn(Player player) {
+        plugin.getStorage().serialize(EnumDataDirection.TO_SPAWN_LOCATION, player.getLocation());
+        player.sendMessage(new ComponentBuilder("Set successful!").color(ChatColor.GREEN).create());
     }
-
 }

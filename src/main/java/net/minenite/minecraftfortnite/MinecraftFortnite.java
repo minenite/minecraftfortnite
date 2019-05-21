@@ -2,6 +2,7 @@ package net.minenite.minecraftfortnite;
 
 import co.aikar.commands.PaperCommandManager;
 import net.minenite.minecraftfortnite.commands.CommandInfo;
+import net.minenite.minecraftfortnite.commands.CommandModify;
 import net.minenite.minecraftfortnite.listeners.PlayerJoinListener;
 import net.minenite.minecraftfortnite.listeners.map.MapInitializeListener;
 import net.minenite.minecraftfortnite.storage.EnumDataDirection;
@@ -31,6 +32,7 @@ public final class MinecraftFortnite extends JavaPlugin {
     private void setCommands() {
         PaperCommandManager manager = new PaperCommandManager(this);
         manager.registerCommand(new CommandInfo());
+        manager.registerCommand(new CommandModify(this));
     }
 
     /**

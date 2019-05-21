@@ -37,6 +37,10 @@ public class ImageRenderer extends MapRenderer {
 
     public ImageRenderer(MinecraftFortnite main) {
         File[] files = main.getDataFolder().listFiles((file, name) -> endsWithImageExtension(name));
+        if (files == null) {
+            imageFile = null;
+            return;
+        }
         if (files.length > 1) {
             throw new UnsupportedOperationException("There are 2 or more image files inside data " +
                     "folder. Cannot render 2 or more images!");
@@ -46,10 +50,15 @@ public class ImageRenderer extends MapRenderer {
 
     @Override
     public void render(@NotNull MapView map, @NotNull MapCanvas canvas, @NotNull Player player) {
+        if (imageFile == null) {
+            return;
+        }
         try {
             BufferedImage image = ImageIO.read(imageFile);
             canvas.drawImage(0, 0, image);
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean endsWithImageExtension(String name) {
