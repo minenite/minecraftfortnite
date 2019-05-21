@@ -91,7 +91,13 @@ public class Storage {
             map.put("yaw", data.getConfiguration().get(basePath + "yaw"));
             map.put("pitch", data.getConfiguration().get(basePath + "pitch"));
         }
-        return Location.deserialize(map);
+        Location returned;
+        try {
+            returned = Location.deserialize(map);
+        } catch (IllegalArgumentException e) {
+            returned = null;
+        }
+        return returned;
     }
 
     public List<Location> deserialize(EnumDataDirection dataDirection) {
