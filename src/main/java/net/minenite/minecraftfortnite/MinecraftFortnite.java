@@ -8,6 +8,7 @@ public final class MinecraftFortnite extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        setCommands();
         getLogger().info("Enabled");
     }
 
