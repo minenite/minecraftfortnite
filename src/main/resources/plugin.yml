@@ -1,0 +1,5 @@
+name: MinecraftFortnite
+version: ${project.version}
+main: net.minenite.minecraftfortnite.MinecraftFortnite
+api-version: 1.13
+authors: [MineniteDevTeam]
