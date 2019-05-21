@@ -27,38 +27,42 @@ import java.io.IOException;
 import net.minenite.minecraftfortnite.MinecraftFortnite;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapCursorCollection;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.jetbrains.annotations.NotNull;
 
 public class ImageRenderer extends MapRenderer {
 
-    private final File imageFile;
+    private BufferedImage image;
 
     public ImageRenderer(MinecraftFortnite main) {
         File[] files = main.getDataFolder().listFiles((file, name) -> endsWithImageExtension(name));
         if (files == null) {
-            imageFile = null;
+            image = null;
             return;
         }
         if (files.length > 1) {
             throw new UnsupportedOperationException("There are 2 or more image files inside data " +
                     "folder. Cannot render 2 or more images!");
         }
-        imageFile = files[0];
+        try {
+            image = ImageIO.read(files[0]);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void render(@NotNull MapView map, @NotNull MapCanvas canvas, @NotNull Player player) {
-        if (imageFile == null) {
+        if (image == null) {
             return;
         }
-        try {
-            BufferedImage image = ImageIO.read(imageFile);
-            canvas.drawImage(0, 0, image);
-        } catch (IOException e) {
-            e.printStackTrace();
+        MapCursorCollection cursors = canvas.getCursors();
+        for (int cursor = 0; cursor < cursors.size(); cursor++) {
+            cursors.removeCursor(cursors.getCursor(cursor));
         }
+        canvas.drawImage(14, 15, image);
     }
 
     private boolean endsWithImageExtension(String name) {
