@@ -62,7 +62,7 @@ public class ImageRenderer extends MapRenderer {
         for (int cursor = 0; cursor < cursors.size(); cursor++) {
             cursors.removeCursor(cursors.getCursor(cursor));
         }
-        canvas.drawImage(14, 15, image);
+        canvas.drawImage(0, 0, image);
     }
 
     private boolean endsWithImageExtension(String name) {
