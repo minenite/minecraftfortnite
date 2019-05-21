@@ -22,8 +22,13 @@ package net.minenite.minecraftfortnite.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Subcommand;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+/**
+ * This command is for example usage of ACF and will be removed from MrIvanPlays anytime soon.
+ */
 @CommandAlias("mcfortinfo")
 public class CommandInfo extends BaseCommand {
 
@@ -31,5 +36,18 @@ public class CommandInfo extends BaseCommand {
     public void sendInfo(CommandSender sender) {
         sender.sendMessage("Name: MinecraftFortnite; version: 1.0.0-SNAPSHOT; authors: " +
                 "MineniteDevTeam");
+    }
+
+    /**
+     * You shouldn't be worried about method parameters if they are from bukkit or java, ACF will
+     * handle them without additional work towards you. If you want something custom, you should
+     * register a context or a flag.
+     *
+     * @param player when a player parameter is inside the method, it means that this command can
+     *              ONLY be run by player.
+     */
+    @Subcommand("someSubCommand|ssc")
+    public void methodNamesCanBeWhateverTheShitYouWant(Player player) {
+        player.sendMessage("#SomeSubCommand #ACF");
     }
 }
