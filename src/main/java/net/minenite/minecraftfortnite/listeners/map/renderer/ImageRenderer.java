@@ -55,6 +55,7 @@ public class ImageRenderer extends MapRenderer {
 
     @Override
     public void render(@NotNull MapView map, @NotNull MapCanvas canvas, @NotNull Player player) {
+        map.getRenderers().clear();
         if (image == null) {
             return;
         }
