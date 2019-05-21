@@ -20,8 +20,13 @@
 package net.minenite.minecraftfortnite.storage;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.bukkit.Location;
 
@@ -74,7 +79,7 @@ public class Storage {
     /**
      * Pos will be ignored if data direction is to_spawn_location
      **/
-    public Location deserialize(EnumDataDirection dataDirection, int pos) {
+    private Location deserialize(EnumDataDirection dataDirection, int pos) {
         Map<String, Object> map = new ConcurrentHashMap<>();
         String basePath = dataDirection == EnumDataDirection.TO_SPAWN_LOCATION ?
                 dataDirection.getPathToStart() : dataDirection.getPathToStart() + pos;
@@ -87,5 +92,26 @@ public class Storage {
             map.put("pitch", data.getConfiguration().get(basePath + "pitch"));
         }
         return Location.deserialize(map);
+    }
+
+    public List<Location> deserialize(EnumDataDirection dataDirection) {
+        if (dataDirection == EnumDataDirection.TO_SPAWN_LOCATION) {
+            return Collections.singletonList(deserialize(dataDirection, 0));
+        }
+        List<Location> list = new ArrayList<>();
+        Set<String> configKeys = data.getConfiguration().getKeys(false);
+        Set<String> keysToThisDirection =
+                configKeys.stream().filter(key -> key.toLowerCase().startsWith(dataDirection.getPathToStart().toLowerCase())).collect(Collectors.toSet());
+        Set<String> numbersString = keysToThisDirection.stream().map(key -> key.toLowerCase().substring(0,
+                dataDirection.getPathToStart().length())).collect(Collectors.toSet());
+        //
+        // memory which is not needed gets cleared
+        configKeys.clear();
+        keysToThisDirection.clear();
+        //
+        Set<Integer> numbersSet = numbersString.stream().map(Integer::parseInt).collect(Collectors.toSet());
+        numbersSet.clear(); // again get rid of some memory
+        numbersSet.forEach(number -> list.add(deserialize(dataDirection, number)));
+        return list;
     }
 }
