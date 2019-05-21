@@ -79,7 +79,7 @@ public class Storage {
     /**
      * Pos will be ignored if data direction is to_spawn_location
      **/
-    private Location deserialize(EnumDataDirection dataDirection, int pos) {
+    public Location deserialize(EnumDataDirection dataDirection, int pos) {
         Map<String, Object> map = new ConcurrentHashMap<>();
         String basePath = dataDirection == EnumDataDirection.TO_SPAWN_LOCATION ?
                 dataDirection.getPathToStart() : dataDirection.getPathToStart() + pos;
