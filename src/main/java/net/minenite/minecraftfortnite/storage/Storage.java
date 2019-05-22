@@ -120,4 +120,33 @@ public class Storage {
         numbersSet.forEach(number -> list.add(deserialize(dataDirection, number)));
         return list;
     }
+
+    public void remove(EnumDataDirection dataDirection, Location location) {
+        Set<String> filteredkeys =
+                data.getConfiguration().getKeys(false).stream().filter(key -> key.toLowerCase().startsWith(dataDirection.getPathToStart().toLowerCase()))
+                .collect(Collectors.toSet());
+        for (String key : filteredkeys) {
+            if (equals(key, location)) {
+                data.getConfiguration().set(key, null);
+                data.save();
+            }
+        }
+    }
+
+    public boolean contains(EnumDataDirection dataDirection, Location location) {
+        Set<String> filteredkeys =
+                data.getConfiguration().getKeys(false).stream().filter(key -> key.toLowerCase().startsWith(dataDirection.getPathToStart().toLowerCase()))
+                        .collect(Collectors.toSet());
+        for (String key : filteredkeys) {
+            if (equals(key, location)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean equals(String key, Location location) {
+        return data.getConfiguration().getDouble(key + ".x") == location.getX() && data.getConfiguration().getDouble(key + ".y") == location.getY()
+                && data.getConfiguration().getDouble(key + ".z") == location.getZ();
+    }
 }

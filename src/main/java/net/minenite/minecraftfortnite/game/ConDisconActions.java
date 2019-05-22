@@ -19,6 +19,9 @@
  **/
 package net.minenite.minecraftfortnite.game;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minenite.minecraftfortnite.MinecraftFortnite;
 import net.minenite.minecraftfortnite.storage.EnumDataDirection;
 import org.bukkit.Bukkit;
@@ -41,10 +44,15 @@ public class ConDisconActions {
     }
 
     public static void disconnectActions(Player player, MinecraftFortnite plugin) {
+        List<Player> toUnhide = new ArrayList<>();
         player.spigot().getHiddenPlayers().forEach(hidden -> {
+            toUnhide.add(hidden);
+        });
+        for (Player hidden : toUnhide) {
             player.showPlayer(plugin, hidden);
             hidden.showPlayer(plugin, player);
-        });
+        }
+        toUnhide.clear();
         player.getInventory().clear();
     }
 }
