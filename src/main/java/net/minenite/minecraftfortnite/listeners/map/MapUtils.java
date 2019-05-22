@@ -19,27 +19,11 @@
  **/
 package net.minenite.minecraftfortnite.listeners.map;
 
-import net.minenite.minecraftfortnite.MinecraftFortnite;
-import net.minenite.minecraftfortnite.listeners.map.renderer.ImageRenderer;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.map.MapView;
 
-public class MapInitializeListener implements Listener {
+public class MapUtils {
 
-    private final MinecraftFortnite plugin;
-
-    public MapInitializeListener(MinecraftFortnite main) {
-        plugin = main;
-    }
-
-    @EventHandler
-    public void onMapInitialize(MapInitializeEvent event) {
-        MapView mapView = event.getMap();
-        mapView.setScale(MapView.Scale.FARTHEST);
-        mapView.setUnlimitedTracking(false);
-        MapUtils.removeRenderers(mapView);
-        mapView.addRenderer(new ImageRenderer(plugin));
+    public static void removeRenderers(MapView view) {
+        view.getRenderers().forEach(view::removeRenderer);
     }
 }
