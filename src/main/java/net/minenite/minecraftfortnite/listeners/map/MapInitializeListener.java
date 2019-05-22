@@ -39,7 +39,7 @@ public class MapInitializeListener implements Listener {
         MapView mapView = event.getMap();
         mapView.setScale(MapView.Scale.FARTHEST);
         mapView.setUnlimitedTracking(false);
-        MapUtils.removeRenderers(mapView);
+        mapView.getRenderers().forEach(mapView::removeRenderer);
         mapView.addRenderer(new ImageRenderer(plugin));
     }
 }
