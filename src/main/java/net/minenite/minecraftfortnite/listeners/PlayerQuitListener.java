@@ -19,27 +19,26 @@
  **/
 package net.minenite.minecraftfortnite.listeners;
 
-import net.md_5.bungee.api.ChatColor;
 import net.minenite.minecraftfortnite.MinecraftFortnite;
 import net.minenite.minecraftfortnite.game.ConDisconActions;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
-public class PlayerJoinListener implements Listener {
+public class PlayerQuitListener implements Listener {
 
     private final MinecraftFortnite plugin;
 
-    public PlayerJoinListener(MinecraftFortnite main) {
+    public PlayerQuitListener(MinecraftFortnite main) {
         plugin = main;
     }
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
+    public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        event.setJoinMessage(ChatColor.DARK_GREEN + player.getName() + ChatColor.YELLOW + " has joined!");
-        ConDisconActions.connectActions(player, plugin);
+        event.setQuitMessage(ChatColor.RED + player.getName() + ChatColor.YELLOW + " has left!");
+        ConDisconActions.disconnectActions(player, plugin);
     }
-
 }

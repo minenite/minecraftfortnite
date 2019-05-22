@@ -17,29 +17,34 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  **/
-package net.minenite.minecraftfortnite.listeners;
+package net.minenite.minecraftfortnite.game;
 
-import net.md_5.bungee.api.ChatColor;
 import net.minenite.minecraftfortnite.MinecraftFortnite;
-import net.minenite.minecraftfortnite.game.ConDisconActions;
+import net.minenite.minecraftfortnite.storage.EnumDataDirection;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 
-public class PlayerJoinListener implements Listener {
+public class ConDisconActions {
 
-    private final MinecraftFortnite plugin;
-
-    public PlayerJoinListener(MinecraftFortnite main) {
-        plugin = main;
+    public static void connectActions(Player player, MinecraftFortnite plugin) {
+        Location teleportTo = plugin.getStorage().deserialize(EnumDataDirection.TO_SPAWN_LOCATION, 0);
+        if (teleportTo == null) {
+            return;
+        }
+        player.teleport(teleportTo);
+        Bukkit.getOnlinePlayers().forEach(online -> {
+            online.hidePlayer(plugin, player);
+            player.hidePlayer(plugin, online);
+        });
+        // todo: add rendered map to slot 0
     }
 
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        event.setJoinMessage(ChatColor.DARK_GREEN + player.getName() + ChatColor.YELLOW + " has joined!");
-        ConDisconActions.connectActions(player, plugin);
+    public static void disconnectActions(Player player, MinecraftFortnite plugin) {
+        player.spigot().getHiddenPlayers().forEach(hidden -> {
+            player.showPlayer(plugin, hidden);
+            hidden.showPlayer(plugin, player);
+        });
+        player.getInventory().clear();
     }
-
 }

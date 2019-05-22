@@ -19,27 +19,41 @@
  **/
 package net.minenite.minecraftfortnite.listeners;
 
-import net.md_5.bungee.api.ChatColor;
+import java.util.HashSet;
+import java.util.Set;
+
 import net.minenite.minecraftfortnite.MinecraftFortnite;
-import net.minenite.minecraftfortnite.game.ConDisconActions;
-import org.bukkit.entity.Player;
+import net.minenite.minecraftfortnite.storage.EnumDataDirection;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
-public class PlayerJoinListener implements Listener {
+public class PlayerPreLoginListener implements Listener {
 
     private final MinecraftFortnite plugin;
 
-    public PlayerJoinListener(MinecraftFortnite main) {
+    public PlayerPreLoginListener(MinecraftFortnite main) {
         plugin = main;
     }
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        event.setJoinMessage(ChatColor.DARK_GREEN + player.getName() + ChatColor.YELLOW + " has joined!");
-        ConDisconActions.connectActions(player, plugin);
+    public void on(AsyncPlayerPreLoginEvent event) {
+        Location tpLoc = plugin.getStorage().deserialize(EnumDataDirection.TO_SPAWN_LOCATION, 0);
+        Set<String> names = new HashSet<>();
+        plugin.getServer().getWhitelistedPlayers().forEach(offline -> names.add(offline.getName()));
+        if (tpLoc == null) {
+            names.forEach(name -> {
+                if (!event.getName().equalsIgnoreCase(name)) {
+                    event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Sorry, " +
+                            "but the setup is still not finished.");
+                }
+            });
+        }
+        if (plugin.getGame().isCurrentlyPlaying()) {
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ChatColor.YELLOW + "There" +
+                    "'s already running game...");
+        }
     }
-
 }

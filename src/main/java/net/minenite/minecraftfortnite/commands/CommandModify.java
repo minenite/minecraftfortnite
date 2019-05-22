@@ -21,13 +21,17 @@ package net.minenite.minecraftfortnite.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.minenite.minecraftfortnite.MinecraftFortnite;
 import net.minenite.minecraftfortnite.storage.EnumDataDirection;
+import org.bukkit.Location;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 @CommandAlias("mfmodify|mfm")
 @CommandPermission("minecraftfortnite.modify")
@@ -40,8 +44,24 @@ public class CommandModify extends BaseCommand {
     }
 
     @Subcommand("spawnLoc")
+    @CommandCompletion("spawnLoc")
     public void modifySpawn(Player player) {
         plugin.getStorage().serialize(EnumDataDirection.TO_SPAWN_LOCATION, player.getLocation());
+        player.spigot().sendMessage(new ComponentBuilder("Set successful!").color(ChatColor.GREEN).create());
+    }
+
+    @Subcommand("chestLoc")
+    @CommandCompletion("chestLoc")
+    public void addChest(Player player) {
+        Location location = player.getLocation();
+        Vector direction = location.getDirection();
+        Location blockLocation = new Location(player.getWorld(), direction.getBlockX(),
+                direction.getBlockY(), direction.getBlockZ());
+        if (!(blockLocation.getBlock() instanceof Chest)) {
+            player.spigot().sendMessage(new ComponentBuilder("Facing block is not a chest").color(ChatColor.RED).create());
+            return;
+        }
+        plugin.getStorage().serialize(EnumDataDirection.TO_CHEST_LOCATION, blockLocation);
         player.spigot().sendMessage(new ComponentBuilder("Set successful!").color(ChatColor.GREEN).create());
     }
 }

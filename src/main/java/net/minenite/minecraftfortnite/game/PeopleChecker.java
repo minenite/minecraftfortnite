@@ -17,29 +17,49 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  **/
-package net.minenite.minecraftfortnite.listeners;
+package net.minenite.minecraftfortnite.game;
 
-import net.md_5.bungee.api.ChatColor;
 import net.minenite.minecraftfortnite.MinecraftFortnite;
-import net.minenite.minecraftfortnite.game.ConDisconActions;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
 
-public class PlayerJoinListener implements Listener {
+public class PeopleChecker {
 
+    private final int requiredToStart;
     private final MinecraftFortnite plugin;
+    private BukkitTask task;
+    private boolean currentlyHas;
 
-    public PlayerJoinListener(MinecraftFortnite main) {
-        plugin = main;
+    public PeopleChecker(MinecraftFortnite plugin, int requiredToStart) {
+        this.requiredToStart = requiredToStart;
+        this.plugin = plugin;
+        currentlyHas = false;
     }
 
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        event.setJoinMessage(ChatColor.DARK_GREEN + player.getName() + ChatColor.YELLOW + " has joined!");
-        ConDisconActions.connectActions(player, plugin);
+    public void startChecking() {
+        new Runnable() {
+
+            BukkitTask task = Bukkit.getServer().getScheduler().runTaskTimer(plugin, this, 0, 20);
+
+            @Override
+            public void run() {
+                task = task;
+                int playerSize = Bukkit.getOnlinePlayers().size();
+                if (playerSize == requiredToStart) {
+                    currentlyHas = true;
+                } else {
+                    currentlyHas = false;
+                }
+            }
+        };
+    }
+
+    public void stopChecking() {
+        task.cancel();
+    }
+
+    public boolean isPlayersInside() {
+        return currentlyHas;
     }
 
 }
