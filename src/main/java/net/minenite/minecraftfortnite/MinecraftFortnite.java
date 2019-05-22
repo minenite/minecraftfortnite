@@ -1,6 +1,6 @@
 package net.minenite.minecraftfortnite;
 
-import co.aikar.commands.PaperCommandManager;
+import co.aikar.commands.BukkitCommandManager;
 import net.minenite.minecraftfortnite.commands.CommandInfo;
 import net.minenite.minecraftfortnite.commands.CommandModify;
 import net.minenite.minecraftfortnite.listeners.PlayerJoinListener;
@@ -30,7 +30,7 @@ public final class MinecraftFortnite extends JavaPlugin {
     }
 
     private void setCommands() {
-        PaperCommandManager manager = new PaperCommandManager(this);
+        BukkitCommandManager manager = new BukkitCommandManager(this);
         manager.registerCommand(new CommandInfo());
         manager.registerCommand(new CommandModify(this));
     }
