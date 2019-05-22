@@ -42,6 +42,6 @@ public class CommandModify extends BaseCommand {
     @Subcommand("spawnLoc")
     public void modifySpawn(Player player) {
         plugin.getStorage().serialize(EnumDataDirection.TO_SPAWN_LOCATION, player.getLocation());
-        player.sendMessage(new ComponentBuilder("Set successful!").color(ChatColor.GREEN).create());
+        player.spigot().sendMessage(new ComponentBuilder("Set successful!").color(ChatColor.GREEN).create());
     }
 }

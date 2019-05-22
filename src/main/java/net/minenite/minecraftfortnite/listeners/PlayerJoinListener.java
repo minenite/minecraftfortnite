@@ -43,7 +43,7 @@ public class PlayerJoinListener implements Listener {
         event.setJoinMessage(ChatColor.BLUE + player.getName() + ChatColor.YELLOW + " has joined");
         Location teleportTo = plugin.getStorage().deserialize(EnumDataDirection.TO_SPAWN_LOCATION, 0);
         if (teleportTo == null) {
-            player.sendMessage(new ComponentBuilder("No teleport location set!").color(ChatColor.RED).create());
+            player.spigot().sendMessage(new ComponentBuilder("No teleport location set!").color(ChatColor.RED).create());
             return;
         }
         player.teleport(teleportTo);
