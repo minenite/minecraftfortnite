@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 
 import net.minenite.minecraftfortnite.MinecraftFortnite;
-import net.minenite.minecraftfortnite.listeners.map.MapUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapCursorCollection;
@@ -56,7 +55,6 @@ public class ImageRenderer extends MapRenderer {
 
     @Override
     public void render(@NotNull MapView map, @NotNull MapCanvas canvas, @NotNull Player player) {
-        MapUtils.removeRenderers(map);
         if (image == null) {
             return;
         }
