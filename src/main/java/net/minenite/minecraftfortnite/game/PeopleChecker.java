@@ -27,7 +27,7 @@ public class PeopleChecker {
 
     private final int requiredToStart;
     private final MinecraftFortnite plugin;
-    private BukkitTask task;
+    private BukkitTask scheduled;
     private boolean currentlyHas;
 
     public PeopleChecker(MinecraftFortnite plugin, int requiredToStart) {
@@ -39,11 +39,11 @@ public class PeopleChecker {
     public void startChecking() {
         new Runnable() {
 
-            BukkitTask task = Bukkit.getServer().getScheduler().runTaskTimer(plugin, this, 0, 20);
+            final BukkitTask task = Bukkit.getServer().getScheduler().runTaskTimer(plugin, this, 0, 20);
 
             @Override
             public void run() {
-                task = task;
+                scheduled = task;
                 int playerSize = Bukkit.getOnlinePlayers().size();
                 if (playerSize == requiredToStart) {
                     currentlyHas = true;
@@ -55,7 +55,7 @@ public class PeopleChecker {
     }
 
     public void stopChecking() {
-        task.cancel();
+        scheduled.cancel();
     }
 
     public boolean isPlayersInside() {
