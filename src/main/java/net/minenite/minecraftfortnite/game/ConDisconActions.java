@@ -43,7 +43,7 @@ public class ConDisconActions {
             online.hidePlayer(plugin, player);
             player.hidePlayer(plugin, online);
         });
-        ItemStack mapItem = new ItemStack(Material.MAP, 0);
+        ItemStack mapItem = new ItemStack(Material.MAP, 1);
         MapMeta mapMeta = (MapMeta) mapItem.getItemMeta();
         mapMeta.setMapView(plugin.getMapView());
         mapMeta.setDisplayName(plugin.colorize("&aView map"));
