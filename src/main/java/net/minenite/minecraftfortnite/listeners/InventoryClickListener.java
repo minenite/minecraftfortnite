@@ -17,35 +17,38 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  **/
-package net.minenite.minecraftfortnite.listeners.map;
+package net.minenite.minecraftfortnite.listeners;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import net.minenite.minecraftfortnite.MinecraftFortnite;
-import net.minenite.minecraftfortnite.listeners.map.renderer.ImageRenderer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.server.MapInitializeEvent;
-import org.bukkit.map.MapView;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
-public class MapInitializeListener implements Listener {
+public class InventoryClickListener implements Listener {
 
     private final MinecraftFortnite plugin;
-    private MapView mapView;
 
-    public MapInitializeListener(MinecraftFortnite main) {
+    public InventoryClickListener(MinecraftFortnite main) {
         plugin = main;
     }
 
     @EventHandler
-    public void onMapInitialize(MapInitializeEvent event) {
-        MapView mapView = event.getMap();
-        mapView.setScale(MapView.Scale.FARTHEST);
-        mapView.setUnlimitedTracking(false);
-        mapView.getRenderers().forEach(mapView::removeRenderer);
-        mapView.addRenderer(new ImageRenderer(plugin));
-        this.mapView = mapView;
-    }
-
-    public MapView getMapView() {
-        return mapView;
+    public void onClick(InventoryClickEvent event) {
+        if (!plugin.getGame().isCurrentlyPlaying()) {
+            Set<String> names = new HashSet<>();
+            plugin.getServer().getWhitelistedPlayers().forEach(offline -> names.add(offline.getName()));
+            if (event.getWhoClicked() instanceof Player) {
+                Player player = (Player) event.getWhoClicked();
+                for (String name : names) {
+                    if (!player.getName().equalsIgnoreCase(name)) {
+                        event.setCancelled(true);
+                    }
+                }
+            }
+        }
     }
 }

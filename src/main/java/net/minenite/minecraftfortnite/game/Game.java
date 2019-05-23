@@ -92,6 +92,7 @@ public class Game {
 
     public void start() {
         // todo
+        plugin.getServer().getOnlinePlayers().forEach(player -> player.getInventory().clear());
         setItemsInsideChests();
         gameFired = true;
     }
