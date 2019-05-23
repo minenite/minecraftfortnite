@@ -17,51 +17,51 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  **/
-package net.minenite.minecraftfortnite.game;
+package net.minenite.minecraftfortnite.game.timer;
 
 import net.minenite.minecraftfortnite.MinecraftFortnite;
 import org.bukkit.scheduler.BukkitTask;
 
-public class PeopleChecker {
+public class Timer {
 
-    private final int requiredToStart;
     private final MinecraftFortnite plugin;
-    private BukkitTask scheduled;
-    private boolean currentlyHas;
+    private long time;
+    private BukkitTask timerTask;
 
-    public PeopleChecker(MinecraftFortnite plugin, int requiredToStart) {
-        this.requiredToStart = requiredToStart;
-        this.plugin = plugin;
-        currentlyHas = false;
+    public Timer(MinecraftFortnite main, long timeWait) {
+        time = timeWait;
+        plugin = main;
     }
 
-    public void startChecking() {
+    public void startTimer() {
         new Runnable() {
 
-            final BukkitTask task = plugin.getServer().getScheduler().runTaskTimer(plugin, this, 0,
-                    20);
+            final BukkitTask task = plugin.getServer().getScheduler().runTaskTimer(plugin, this, 0, 20);
 
             @Override
             public void run() {
-                scheduled = task;
-                int playerSize = plugin.getServer().getOnlinePlayers().size();
-                if (playerSize == requiredToStart) {
-                    currentlyHas = true;
-                } else {
-                    currentlyHas = false;
+                timerTask = task;
+                time = time--;
+                if (time == 0) {
+                    task.cancel();
                 }
             }
         };
     }
 
-    public void stopChecking() {
-        if (scheduled != null) {
-            scheduled.cancel();
+    public boolean isTimeElapsed() {
+        return time == 0;
+    }
+
+    public void stopTimer() {
+        if (timerTask != null) {
+            timerTask.cancel();
         }
     }
 
-    public boolean isPlayersInside() {
-        return currentlyHas;
+    public String getFormattedTime() {
+        return TimeParser.convert(TimeParser.parseActualTime(time + "s"));
     }
+
 
 }

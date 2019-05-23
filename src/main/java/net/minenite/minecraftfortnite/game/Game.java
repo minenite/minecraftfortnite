@@ -22,15 +22,22 @@ package net.minenite.minecraftfortnite.game;
 import java.util.List;
 
 import net.minenite.minecraftfortnite.MinecraftFortnite;
+import net.minenite.minecraftfortnite.game.timer.TimeParser;
+import net.minenite.minecraftfortnite.game.timer.Timer;
 import net.minenite.minecraftfortnite.storage.EnumDataDirection;
+import net.minenite.minecraftfortnite.util.PlayerUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 
 public class Game {
 
     private final MinecraftFortnite plugin;
     private final List<ItemStack> items;
     private final int peopleToStart;
+    private final Timer timer;
     private PeopleChecker peopleChecker;
     private boolean gameFired;
 
@@ -39,6 +46,7 @@ public class Game {
         this.items = items;
         gameFired = false;
         this.peopleToStart = peopleToStart;
+        timer = new Timer(plugin, TimeParser.parseActualTime("10m"));
     }
 
     public boolean isCurrentlyPlaying() {
@@ -46,20 +54,45 @@ public class Game {
     }
 
     public void startChecker() {
-        // todo: timer
+        timer.startTimer();
         peopleChecker = new PeopleChecker(plugin, peopleToStart);
         peopleChecker.startChecking();
+        new Runnable() {
+
+            final BukkitTask task = plugin.getServer().getScheduler().runTaskTimer(plugin, this, 0, 20);
+
+            @Override
+            public void run() {
+                if (timer.isTimeElapsed()) {
+                    task.cancel();
+                    plugin.getServer().getOnlinePlayers().forEach(player -> {
+                        PlayerUtil.stopSendingAnimatedActionbar(player,
+                                "&aTime to start: " + timer.getFormattedTime());
+                        kickPlayer(player);
+                    });
+                }
+            }
+        };
     }
 
     public void stopChecker() {
-        // todo: timer
+        timer.stopTimer();
         if (peopleChecker != null) {
             peopleChecker.stopChecking();
         }
     }
 
+    public boolean hasPlayersToStart() {
+        return peopleChecker.isPlayersInside();
+    }
+
+    public void sendTimeToStart() {
+        plugin.getServer().getOnlinePlayers().forEach(player -> PlayerUtil.sendAnimatedActionbar(player, "&aTime to start: " + timer.getFormattedTime()));
+    }
+
     public void start() {
         // todo
+        setItemsInsideChests();
         gameFired = true;
     }
 
@@ -71,5 +104,10 @@ public class Game {
             randomizer.set();
         }
         chestLocations.clear(); // get rid of memory
+    }
+
+    private void kickPlayer(Player player) {
+        player.kickPlayer(ChatColor.YELLOW + "Connected players were not equal for start of game." +
+                " \n" + ChatColor.YELLOW + "We need to empty the server and restart");
     }
 }

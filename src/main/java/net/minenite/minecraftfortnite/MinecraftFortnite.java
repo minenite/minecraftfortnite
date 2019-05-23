@@ -12,6 +12,7 @@ import net.minenite.minecraftfortnite.listeners.PlayerQuitListener;
 import net.minenite.minecraftfortnite.listeners.map.MapInitializeListener;
 import net.minenite.minecraftfortnite.storage.EnumDataDirection;
 import net.minenite.minecraftfortnite.storage.Storage;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
@@ -73,5 +74,9 @@ public final class MinecraftFortnite extends JavaPlugin {
 
     public Game getGame() {
         return game;
+    }
+
+    public String colorize(String text) {
+        return ChatColor.translateAlternateColorCodes('&', text);
     }
 }
