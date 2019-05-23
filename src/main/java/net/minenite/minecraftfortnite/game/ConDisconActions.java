@@ -25,7 +25,6 @@ import java.util.List;
 import net.minenite.minecraftfortnite.MinecraftFortnite;
 import net.minenite.minecraftfortnite.storage.EnumDataDirection;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -33,8 +32,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
 
 public class ConDisconActions {
-
-    private static final MinecraftFortnite plugin = MinecraftFortnite.getPlugin(MinecraftFortnite.class);
 
     public static void connectActions(Player player, MinecraftFortnite plugin) {
         Location teleportTo = plugin.getStorage().deserialize(EnumDataDirection.TO_SPAWN_LOCATION, 0);
@@ -49,7 +46,7 @@ public class ConDisconActions {
         ItemStack mapItem = new ItemStack(Material.MAP, 0);
         MapMeta mapMeta = (MapMeta) mapItem.getItemMeta();
         mapMeta.setMapView(plugin.getMapView());
-        mapMeta.setDisplayName(ChatColor.GREEN + "View map");
+        mapMeta.setDisplayName(plugin.colorize("&aView map"));
         mapItem.setItemMeta(mapMeta);
         player.getInventory().setItem(0, mapItem);
     }
