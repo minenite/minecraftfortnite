@@ -54,6 +54,7 @@ public class ChestRandomizer {
         Block chestBlock = chestLocation.getBlock();
         ThreadLocalRandom random = ThreadLocalRandom.current();
         Inventory blockInventory = ((Chest) chestBlock).getBlockInventory();
+        blockInventory.clear();
         for (int i = 0; i < 10; i++) {
             int randomInt = random.nextInt(0, items.size());
             ItemStack itemSet = items.get(randomInt);
