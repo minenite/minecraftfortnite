@@ -28,9 +28,10 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.minenite.minecraftfortnite.MinecraftFortnite;
 import net.minenite.minecraftfortnite.storage.EnumDataDirection;
 import org.bukkit.Location;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Chest;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 @CommandAlias("mfmodify|mfm")
 @CommandPermission("minecraftfortnite.modify")
@@ -50,45 +51,16 @@ public class CommandModify extends BaseCommand {
 
     @Subcommand("chestLoc")
     public void addChest(Player player) {
-        boolean found = false;
-        Location blockLocation = null;
-        for (BlockState state : player.getLocation().getBlock().getChunk().getTileEntities()) {
-            if (state.getBlock() instanceof Chest) {
-                found = true;
-                blockLocation = state.getBlock().getLocation();
-            }
-        }
-        if (!found) {
-            player.spigot().sendMessage(new ComponentBuilder("No chest found in the chunk you " +
-                    "are in.").color(ChatColor.RED).create());
+        Location eyeLocation = player.getEyeLocation();
+        Vector playerLocationVector = player.getLocation().getDirection();
+        Location frontLocation = eyeLocation.add(playerLocationVector);
+        Block block = frontLocation.getBlock();
+        if (block.getType() != Material.CHEST) {
+            player.spigot().sendMessage(new ComponentBuilder("Not a chest where you are looking " +
+                    "at.").color(ChatColor.RED).create());
             return;
         }
-        plugin.getStorage().serialize(EnumDataDirection.TO_CHEST_LOCATION, blockLocation);
-        player.spigot().sendMessage(new ComponentBuilder("Chest coordinates: " + blockLocation.toString() + ". Run /mfmodify removeChestLoc for undo")
-                .color(ChatColor.GREEN).create());
-    }
-
-    @Subcommand("removeChestLoc")
-    public void removeChest(Player player) {
-        boolean found = false;
-        Location blockLocation = null;
-        for (BlockState state : player.getLocation().getBlock().getChunk().getTileEntities()) {
-            if (state.getBlock() instanceof Chest) {
-                found = true;
-                blockLocation = state.getBlock().getLocation();
-            }
-        }
-        if (!found) {
-            player.spigot().sendMessage(new ComponentBuilder("No chest found in the chunk you " +
-                    "are in.").color(ChatColor.RED).create());
-            return;
-        }
-        if (!plugin.getStorage().contains(EnumDataDirection.TO_CHEST_LOCATION, blockLocation)) {
-            player.spigot().sendMessage(new ComponentBuilder("Found chest is not registered. Run " +
-                    "/mfmodify chestLoc to save it.").color(ChatColor.YELLOW).create());
-            return;
-        }
-        plugin.getStorage().remove(EnumDataDirection.TO_CHEST_LOCATION, blockLocation);
-        player.spigot().sendMessage(new ComponentBuilder("Remove success!").color(ChatColor.GREEN).create());
+        plugin.getStorage().serialize(EnumDataDirection.TO_CHEST_LOCATION, block.getLocation());
+        player.spigot().sendMessage(new ComponentBuilder("Success!").color(ChatColor.GREEN).create());
     }
 }
