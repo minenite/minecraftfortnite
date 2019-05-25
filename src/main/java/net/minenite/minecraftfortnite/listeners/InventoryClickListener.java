@@ -20,7 +20,6 @@
 package net.minenite.minecraftfortnite.listeners;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import net.minenite.minecraftfortnite.MinecraftFortnite;
 import org.bukkit.OfflinePlayer;
@@ -40,15 +39,11 @@ public class InventoryClickListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         if (!plugin.getGame().isCurrentlyPlaying()) {
-            Set<String> names =
-                    plugin.getServer().getWhitelistedPlayers().stream().map(OfflinePlayer::getName).collect(Collectors.toSet());
-            System.out.println(names);
-            System.out.println(event.getWhoClicked() instanceof Player);
+            Set<OfflinePlayer> whitelisted = plugin.getServer().getWhitelistedPlayers();
             if (event.getWhoClicked() instanceof Player) {
                 Player player = (Player) event.getWhoClicked();
-                names.forEach(name -> {
-                    System.out.println(player.getName().toLowerCase().equalsIgnoreCase(name.toLowerCase()));
-                    if (!player.getName().toLowerCase().equalsIgnoreCase(name.toLowerCase())) {
+                whitelisted.forEach(offline -> {
+                    if (!player.getUniqueId().equals(offline.getUniqueId())) {
                         event.setCancelled(true);
                     }
                 });
