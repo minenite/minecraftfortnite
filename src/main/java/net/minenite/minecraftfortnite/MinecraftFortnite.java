@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import co.aikar.commands.BukkitCommandManager;
+import me.matt.pvpgunplus.listeners.MinecraftFortniteListenerRegistry;
 import net.minenite.minecraftfortnite.commands.CommandModify;
 import net.minenite.minecraftfortnite.game.Game;
 import net.minenite.minecraftfortnite.listeners.InventoryClickListener;
@@ -13,6 +14,7 @@ import net.minenite.minecraftfortnite.listeners.PlayerQuitListener;
 import net.minenite.minecraftfortnite.listeners.map.MapInitializeListener;
 import net.minenite.minecraftfortnite.storage.EnumDataDirection;
 import net.minenite.minecraftfortnite.storage.Storage;
+import net.minenite.minecraftfortnite.util.GunManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -25,11 +27,14 @@ public final class MinecraftFortnite extends JavaPlugin {
     private Storage storage;
     private Game game;
     private MapInitializeListener mapInitializeListener;
+    private GunManager gunManager;
 
     @Override
     public void onEnable() {
         setCommands();
         storage = new Storage(getDataFolder());
+        gunManager = new GunManager(this);
+        gunManager.callThisOnEnable();
         setSpawnLocationOfWorld();
         setGameInstance();
         registerListeners();
@@ -38,6 +43,7 @@ public final class MinecraftFortnite extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        gunManager.callThisOnDisable();
         getLogger().info("Disabled");
     }
 
@@ -69,6 +75,7 @@ public final class MinecraftFortnite extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerPreLoginListener(this), this);
         getServer().getPluginManager().registerEvents(new InventoryClickListener(this), this);
+        new MinecraftFortniteListenerRegistry(this);
     }
 
     private void setGameInstance() {
@@ -87,5 +94,9 @@ public final class MinecraftFortnite extends JavaPlugin {
 
     public String colorize(String text) {
         return ChatColor.translateAlternateColorCodes('&', text);
+    }
+
+    public GunManager getGunManager() {
+        return gunManager;
     }
 }
