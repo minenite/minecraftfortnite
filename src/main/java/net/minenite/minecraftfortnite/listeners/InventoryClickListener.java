@@ -43,6 +43,7 @@ public class InventoryClickListener implements Listener {
             if (event.getWhoClicked() instanceof Player) {
                 Player player = (Player) event.getWhoClicked();
                 whitelisted.forEach(offline -> {
+                    System.out.println(player.getUniqueId().equals(offline.getUniqueId()));
                     if (!player.getUniqueId().equals(offline.getUniqueId())) {
                         event.setCancelled(true);
                     }

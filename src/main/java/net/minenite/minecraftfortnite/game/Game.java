@@ -20,6 +20,9 @@
 package net.minenite.minecraftfortnite.game;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minenite.minecraftfortnite.MinecraftFortnite;
 import net.minenite.minecraftfortnite.game.timer.TimeParser;
@@ -38,6 +41,7 @@ public class Game {
     private final List<ItemStack> items;
     private final int peopleToStart;
     private final Timer timer;
+    private final Map<UUID, BukkitTask> tasks;
     private PeopleChecker peopleChecker;
     private boolean gameFired;
 
@@ -47,6 +51,7 @@ public class Game {
         gameFired = false;
         this.peopleToStart = peopleToStart;
         timer = new Timer(plugin, TimeParser.parseActualTime("10m"));
+        tasks = new ConcurrentHashMap<>();
     }
 
     public boolean isCurrentlyPlaying() {
@@ -63,11 +68,11 @@ public class Game {
 
             @Override
             public void run() {
-                if (timer.isTimeElapsed()) {
+                if ((timer.isTimeElapsed() || timer.isStopped()) && !peopleChecker.isPlayersInside()) {
                     task.cancel();
                     plugin.getServer().getOnlinePlayers().forEach(player -> {
-                        PlayerUtil.stopSendingAnimatedActionbar(player,
-                                "&aTime to start: " + timer.getFormattedTime());
+                        tasks.get(player.getUniqueId()).cancel();
+                        tasks.remove(player.getUniqueId());
                         kickPlayer(player);
                     });
                 }
@@ -87,7 +92,22 @@ public class Game {
     }
 
     public void sendTimeToStart() {
-        plugin.getServer().getOnlinePlayers().forEach(player -> PlayerUtil.sendAnimatedActionbar(player, "&aTime to start: " + timer.getFormattedTime()));
+        plugin.getServer().getOnlinePlayers().forEach(player -> {
+            new Runnable() {
+
+                final BukkitTask task = plugin.getServer().getScheduler().runTaskTimer(plugin, this, 0,
+                        20);
+
+                @Override
+                public void run() {
+                    if (!tasks.containsKey(player.getUniqueId())) {
+                        tasks.put(player.getUniqueId(), task);
+                    }
+                    PlayerUtil.sendActionbarMessage(player, "&aTime " +
+                            "to start: " + timer.getFormattedTime());
+                }
+            };
+        });
     }
 
     public void start() {

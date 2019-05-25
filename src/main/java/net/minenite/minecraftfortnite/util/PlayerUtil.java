@@ -19,58 +19,14 @@
  **/
 package net.minenite.minecraftfortnite.util;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.UUID;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.minenite.minecraftfortnite.MinecraftFortnite;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 public class PlayerUtil {
 
     private static final MinecraftFortnite plugin = MinecraftFortnite.getPlugin(MinecraftFortnite.class);
-    private static final Multimap<UUID, Pair<String, BukkitTask>> animatedBars =
-            ArrayListMultimap.create();
-
-    public static void sendAnimatedActionbar(Player player, String message) {
-        new Runnable() {
-
-            final BukkitTask task = plugin.getServer().getScheduler().runTaskTimer(plugin, this, 0, 20);
-
-            @Override
-            public void run() {
-                Pair<String, BukkitTask> pair = new Pair<>(message, task);
-                if (!animatedBars.containsValue(pair)) {
-                    animatedBars.put(player.getUniqueId(), pair);
-                }
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                        TextComponent.fromLegacyText(plugin.colorize(message)));
-            }
-        };
-    }
-
-    public static void stopSendingAnimatedActionbar(Player player, String message) {
-        String colorizedMessage = plugin.colorize(message);
-        Collection<Pair<String, BukkitTask>> collection = animatedBars.get(player.getUniqueId());
-        Iterator<Pair<String, BukkitTask>> iterator = collection.iterator();
-        while (iterator.hasNext()) {
-            Pair<String, BukkitTask> pair = iterator.next();
-            if (pair.getKey().toLowerCase().equalsIgnoreCase(colorizedMessage.toLowerCase())) {
-                pair.getValue().cancel();
-                iterator.remove();
-            }
-        }
-        collection.clear();
-        Collection<Pair<String, BukkitTask>> remaining = new HashSet<>();
-        iterator.forEachRemaining(remaining::add);
-        animatedBars.replaceValues(player.getUniqueId(), remaining);
-    }
 
     public static void sendActionbarMessage(Player player, String message) {
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR,

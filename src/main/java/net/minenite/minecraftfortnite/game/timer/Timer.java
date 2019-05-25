@@ -63,5 +63,9 @@ public class Timer {
         return TimeParser.convert(TimeParser.parseActualTime(time + "s"));
     }
 
+    public boolean isStopped() {
+        return timerTask.isCancelled();
+    }
+
 
 }
