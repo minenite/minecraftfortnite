@@ -19,10 +19,11 @@
  **/
 package net.minenite.minecraftfortnite.listeners;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.minenite.minecraftfortnite.MinecraftFortnite;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,15 +40,15 @@ public class InventoryClickListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         if (!plugin.getGame().isCurrentlyPlaying()) {
-            Set<String> names = new HashSet<>();
-            plugin.getServer().getWhitelistedPlayers().forEach(offline -> names.add(offline.getName()));
+            Set<String> names =
+                    plugin.getServer().getWhitelistedPlayers().stream().map(OfflinePlayer::getName).collect(Collectors.toSet());
             if (event.getWhoClicked() instanceof Player) {
                 Player player = (Player) event.getWhoClicked();
-                for (String name : names) {
-                    if (!player.getName().equalsIgnoreCase(name)) {
+                names.forEach(name -> {
+                    if (!player.getName().toLowerCase().equalsIgnoreCase(name.toLowerCase())) {
                         event.setCancelled(true);
                     }
-                }
+                });
             }
         }
     }
