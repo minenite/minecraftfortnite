@@ -42,9 +42,12 @@ public class InventoryClickListener implements Listener {
         if (!plugin.getGame().isCurrentlyPlaying()) {
             Set<String> names =
                     plugin.getServer().getWhitelistedPlayers().stream().map(OfflinePlayer::getName).collect(Collectors.toSet());
+            System.out.println(names);
+            System.out.println(event.getWhoClicked() instanceof Player);
             if (event.getWhoClicked() instanceof Player) {
                 Player player = (Player) event.getWhoClicked();
                 names.forEach(name -> {
+                    System.out.println(player.getName().toLowerCase().equalsIgnoreCase(name.toLowerCase()));
                     if (!player.getName().toLowerCase().equalsIgnoreCase(name.toLowerCase())) {
                         event.setCancelled(true);
                     }

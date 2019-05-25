@@ -38,7 +38,9 @@ public class ConDisconActions {
         if (teleportTo == null) {
             return;
         }
-        player.teleport(teleportTo);
+        try {
+            player.teleport(teleportTo);
+        } catch (IllegalArgumentException e) {} // location error, ignore
         Bukkit.getOnlinePlayers().forEach(online -> {
             online.hidePlayer(plugin, player);
             player.hidePlayer(plugin, online);
@@ -52,10 +54,7 @@ public class ConDisconActions {
     }
 
     public static void disconnectActions(Player player, MinecraftFortnite plugin) {
-        List<Player> toUnhide = new ArrayList<>();
-        player.spigot().getHiddenPlayers().forEach(hidden -> {
-            toUnhide.add(hidden);
-        });
+        List<Player> toUnhide = new ArrayList<>(player.spigot().getHiddenPlayers());
         for (Player hidden : toUnhide) {
             player.showPlayer(plugin, hidden);
             hidden.showPlayer(plugin, player);
