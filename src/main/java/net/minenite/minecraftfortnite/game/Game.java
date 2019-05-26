@@ -19,6 +19,7 @@
  **/
 package net.minenite.minecraftfortnite.game;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -31,6 +32,7 @@ import net.minenite.minecraftfortnite.storage.EnumDataDirection;
 import net.minenite.minecraftfortnite.util.PlayerUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
@@ -38,16 +40,14 @@ import org.bukkit.scheduler.BukkitTask;
 public class Game {
 
     private final MinecraftFortnite plugin;
-    private final List<ItemStack> items;
     private final int peopleToStart;
     private final Timer timer;
     private final Map<UUID, BukkitTask> tasks;
     private PeopleChecker peopleChecker;
     private boolean gameFired;
 
-    public Game(MinecraftFortnite plugin, List<ItemStack> items, int peopleToStart) {
+    public Game(MinecraftFortnite plugin, int peopleToStart) {
         this.plugin = plugin;
-        this.items = items;
         gameFired = false;
         this.peopleToStart = peopleToStart;
         timer = new Timer(plugin, TimeParser.parseActualTime("10m"));
@@ -120,8 +120,13 @@ public class Game {
     private void setItemsInsideChests() {
         List<Location> chestLocations =
                 plugin.getStorage().deserialize(EnumDataDirection.TO_CHEST_LOCATION);
+        ItemStack notchApple = new ItemStack(Material.ENCHANTED_GOLDEN_APPLE, 1);
+        ItemStack goldenApple = new ItemStack(Material.GOLDEN_APPLE, 1);
+        ItemStack porkchop = new ItemStack(Material.COOKED_PORKCHOP, 1);
+        List<ItemStack> otherItems = Arrays.asList(notchApple, goldenApple, porkchop);
+        ChestItemManager itemManager = new ChestItemManager(otherItems);
         for (int i = 0; i < chestLocations.size(); i++) {
-            ChestRandomizer randomizer = new ChestRandomizer(plugin, i, items);
+            ChestRandomizer randomizer = new ChestRandomizer(plugin, i, itemManager.getRandom());
             randomizer.set();
         }
         chestLocations.clear(); // get rid of memory

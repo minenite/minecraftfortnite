@@ -1,8 +1,5 @@
 package net.minenite.minecraftfortnite;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import co.aikar.commands.BukkitCommandManager;
 import net.minenite.minecraftfortnite.commands.CommandModify;
 import net.minenite.minecraftfortnite.game.Game;
@@ -16,7 +13,6 @@ import net.minenite.minecraftfortnite.storage.Storage;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -72,9 +68,7 @@ public final class MinecraftFortnite extends JavaPlugin {
     }
 
     private void setGameInstance() {
-        List<ItemStack> possibleItems = new ArrayList<>();
-        // todo: possible items
-        game = new Game(this, possibleItems, 50);
+        game = new Game(this, 50);
     }
 
     public MapView getMapView() {
