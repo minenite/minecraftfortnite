@@ -21,7 +21,8 @@ package net.minenite.minecraftfortnite.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import me.zombie_striker.qg.QAMain;
 import me.zombie_striker.qg.guns.Gun;
@@ -29,11 +30,13 @@ import org.bukkit.inventory.ItemStack;
 
 public class GunManager {
 
-    public List<ItemStack> getGunItems() {
-        return getGuns().stream().map(Gun::getItemStack).collect(Collectors.toList());
+    public Map<ItemStack, ItemStack> getGunItems() {
+        Map<ItemStack, ItemStack> map = new ConcurrentHashMap<>();
+        getGuns().forEach(gun -> map.put(gun.getItemStack(), gun.getAmmoType().getItemStack()));
+        return map;
     }
 
-    public List<Gun> getGuns() {
+    private List<Gun> getGuns() {
         List<Gun> guns = new ArrayList<>();
         QAMain.gunRegister.forEach(((materialStorage, gun) -> guns.add(gun)));
         return guns;

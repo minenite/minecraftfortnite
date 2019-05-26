@@ -26,20 +26,23 @@ import java.util.concurrent.ThreadLocalRandom;
 import net.minenite.minecraftfortnite.util.GunManager;
 import org.bukkit.inventory.ItemStack;
 
-public class ChestItemManager {
+class ChestItemManager {
 
     private final List<ItemStack> allPossible;
     private final ThreadLocalRandom random;
 
-    public ChestItemManager(List<ItemStack> additionalItems) {
+    ChestItemManager(List<ItemStack> additionalItems) {
         allPossible = new ArrayList<>();
         allPossible.addAll(additionalItems);
         GunManager gunManager = new GunManager();
-        allPossible.addAll(gunManager.getGunItems());
+        gunManager.getGunItems().forEach((gun, ammo) -> {
+            allPossible.add(gun);
+            allPossible.add(ammo);
+        });
         random = ThreadLocalRandom.current();
     }
 
-    public List<ItemStack> getRandom() {
+    List<ItemStack> getRandom() {
         List<ItemStack> list = new ArrayList<>();
         int randomMinusNumber = random.nextInt(0, allPossible.size());
         for (int i = 0; i < allPossible.size() - randomMinusNumber; i++) {
