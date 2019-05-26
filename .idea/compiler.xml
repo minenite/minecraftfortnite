@@ -10,8 +10,5 @@
         <module name="MinecraftFortnite" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="MinecraftFortnite" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
