@@ -1,5 +1,5 @@
 name: MinecraftFortnite
-version: @version@
+version: 1.0-SNAPSHOT
 main: net.minenite.minecraftfortnite.MinecraftFortnite
 api-version: 1.13
 authors: [MineniteDevTeam]

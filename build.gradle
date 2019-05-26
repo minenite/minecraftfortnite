@@ -38,7 +38,7 @@ shadowJar {
 
 group = 'net.minenite'
 version = '1.0-SNAPSHOT'
-description = 'MinecraftFortnite'
+description = 'Battle royale plugin for minenite server'
 sourceCompatibility = '1.8'
 
 build.dependsOn shadowJar
