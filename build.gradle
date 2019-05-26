@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id "com.github.johnrengelman.shadow" version "5.0.0"
 }
 
 repositories {
@@ -24,14 +25,20 @@ repositories {
 dependencies {
     compile 'co.aikar:acf-bukkit:0.5.0-SNAPSHOT'
     compileOnly 'org.spigotmc:spigot-api:1.14.1-R0.1-SNAPSHOT'
-    implementation fileTree("$rootDir/libs")
+    compileOnly fileTree("$rootDir/libs")
 }
 
 compileJava {
     options.encoding = 'UTF-8'
 }
 
+shadowJar {
+    relocate 'co.aikar.commands', 'net.minenite.minecraftfortnite.libs.acf'
+}
+
 group = 'net.minenite'
 version = '1.0-SNAPSHOT'
 description = 'MinecraftFortnite'
 sourceCompatibility = '1.8'
+
+build.dependsOn shadowJar
