@@ -61,5 +61,6 @@ public class ChestRandomizer {
             int randomSlot = random.nextInt(0, blockInventory.getSize());
             blockInventory.setItem(randomSlot, itemSet);
         }
+        chestBlock.getState().update();
     }
 }
