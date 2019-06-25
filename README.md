@@ -11,3 +11,5 @@ You should know:
   * Basic things about acf
   * Using maven
   * Using git
+
+Project on hold ~ downtime +1mo
