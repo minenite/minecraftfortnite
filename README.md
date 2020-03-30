@@ -12,4 +12,4 @@ You should know:
   * Using maven
   * Using git
 
-Project on hold ~ downtime +1mo
+Project on hold ~ downtime until further notice. (Other MineNite servers are still being worked on)
