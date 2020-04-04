@@ -5,7 +5,7 @@ name: MinecraftFortnite\
 ver: MC 1.14.1, Spigot
 
 Libs used:
-  * ACF ([link](https://acfspigot.emc.gs/))
+  * ACF ([link](https://acfspigot.emc.gs/)) Check lib..
 
 You should know:
   * Basic things about acf
